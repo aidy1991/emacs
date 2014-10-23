@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<project name="example" default="compile" basedir="../">
+
+  <!-- propertyタグで変数source、compileを設定 -->
+  <property name="source" value="./Src"/>
+  <property name="compile" value="./Classes"/>
+
+  <!-- ディレクトリClassesの作成 -->
+  <target name="directory">
+    <mkdir dir="${compile}"/>
+  </target>
+
+  <!-- ディレクトリJava内のソースファイルをコンパイル -->
+  <!-- ターゲットdirectoryに依存しているため、
+       ターゲットdirectoryを先に実行 -->
+  <target name="compile" depends="directory">
+    <javac srcdir="${source}"
+           destdir="${compile}"
+           excludes="build.xml" />
+  </target>
+
+  <target name="check-syntax" depends="directory">
+  </target>
+
+</project>

@@ -1,5 +1,14 @@
 ;;; original-theme.el ---
 
+;; 青 : #55acee
+;; 緑 : #9bd351
+;; 白 : #ecf4fa
+;; 灰 : #949da3
+;; 灰 : #374043
+;; 赤 : #cd4c51
+;; 橙 : #cd7a51
+
+
 (deftheme original
   "Aidy color theme")
 

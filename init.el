@@ -295,23 +295,23 @@ are always included."
 (setq tabbar-separator '(1.0)) ;; タブセパレータの長さ
 (set-face-attribute 'tabbar-default nil
                     :family "Ricty"
-                    :foreground "#ccd6dd"
-                    :background "#161616"
+                    :foreground "#ecf4fa"
+                    :background "#2f2f2f"
                     :height 1.0)
 (set-face-attribute 'tabbar-unselected nil
-                    :foreground "#ffffff"
-                    :background "#2e2e2e"
+                    :foreground "#374043"
+                    :background "#b2d9f7"
                     :box nil)
 (set-face-attribute 'tabbar-selected nil
-                    :foreground "#ffffff"
-                    :background "#2f2f2f"
+                    :foreground "#374043"
+                    :background "#55acee"
                     :box nil)
 (set-face-attribute 'tabbar-button nil
                     :box nil)
 (set-face-attribute 'tabbar-separator nil
                     :foreground "#161616"
-                    :background "#161616"
-                    :height 1.0)
+                    :background "#2f2f2f"
+                    :height 1.1)
 
 ;; key bindings
 (global-set-key [(C-<left>)]   'tabbar-forward-tab)
@@ -459,40 +459,6 @@ are always included."
 (setq custom-theme-directory "~/.emacs.d/themes/")
 (load-theme 'original t)
 
-
-;; (set-foreground-color                                  "#ecf4fa") ; 文字色
-;; (set-background-color                                  "#1d1d1d") ; 背景色
-;; (set-cursor-color                                      "#949da3") ; カーソル色
-;; (set-face-background 'region                           "#3c4b59") ; リージョン
-;; ;(set-face-foreground 'modeline                         "#CCCCCC") ; モードライン文字
-;; ;(set-face-background 'modeline                         "#333333") ; モードライン背景
-;; (set-face-foreground 'mode-line-inactive               "#ffffff") ; モードライン文字(非アクティブ)
-;; (set-face-background 'mode-line-inactive               "#434343") ; モードライン背景(非アクティブ)
-;; (set-face-foreground 'font-lock-comment-delimiter-face "#cfc251") ; コメントデリミタ
-;; (set-face-foreground 'font-lock-comment-face           "#cd4c51") ; コメント
-;; (set-face-foreground 'font-lock-string-face            "#cd7a51") ; 文字列
-;; (set-face-foreground 'font-lock-function-name-face     "#9bd351") ; 関数名
-;; (set-face-foreground 'font-lock-keyword-face           "#55acee") ; キーワード
-;; (set-face-foreground 'font-lock-constant-face          "#cd7a51") ; 定数(this, selfなども)
-;; (set-face-foreground 'font-lock-variable-name-face     "#55acee") ; 変数
-;; (set-face-foreground 'font-lock-type-face              "#55acee") ; クラス
-;; (set-face-foreground 'fringe                           "#666666") ; fringe(折り返し記号なでが出る部分)
-;; (set-face-background 'fringe                           "#161616") ; fringe
-
-;; (add-hook 'org-mode-hook
-;;           '(lambda ()
-;;              (set-face-foreground 'org-hide "#282828")))
-
-;; (add-hook 'mmm-mode-hook
-;;           '(lambda ()
-;;              (set-face-background 'mmm-default-submode-face "#404040")))
-
-;; (add-hook 'linum-mode-hook
-;;           '(lambda ()
-;;              (set-face-foreground 'linum "#666666")
-;;              (set-face-background 'linum "#000000")))
-
-
 ;; ------------------------------------------------------------------------
 ;; @ undo-tree
 (require 'undo-tree)
@@ -579,9 +545,76 @@ are always included."
 (setq auto-mode-alist (cons '("\\.markdown" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
+
+;; ------------------------------------------------------------------------
+;; カラーコードに色付け
+;;
+
+(require 'rainbow-mode)
+(add-hook 'css-mode-hook 'rainbow-mode)
+(add-hook 'scss-mode-hook 'rainbow-mode)
+(add-hook 'php-mode-hook 'rainbow-mode)
+(add-hook 'html-mode-hook 'rainbow-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-mode)
+
 ;; ------------------------------------------------------------------------
 ;; Powerline
 ;;
 
 (require 'powerline)
+
+(set-face-attribute 'mode-line nil
+:foreground "#374043"
+:background "#55acee"
+:box nil)
+
+(set-face-attribute 'powerline-active1 nil
+:foreground "#374043"
+:background "#ecf4fa"
+:inherit 'mode-line)
+
+(set-face-attribute 'powerline-active2 nil
+:foreground "#374043"
+:background "#9bd351"
+:inherit 'mode-line)
+
 (powerline-default-theme)
+
+;; ------------------------------------------------------------------------
+;; modeの名前を自分で再定義
+;;
+
+(defvar mode-line-cleaner-alist
+'( ;; For minor-mode, first char is 'space'
+(flymake-mode . " Fm")
+(flycheck-mode . " Fc")
+(paredit-mode . "")
+(eldoc-mode . "")
+(abbrev-mode . "")
+(undo-tree-mode . "")
+(git-gutter-mode . "")
+(anzu-mode . "")
+(yas-minor-mode . "")
+(guide-key-mode . "")
+;; Major modes
+
+(fundamental-mode . "Fund")
+(dired-mode . "Dir")
+(lisp-interaction-mode . "Li")
+(cperl-mode . "Pl")
+(python-mode . "Py")
+(ruby-mode . "Rb")
+(emacs-lisp-mode . "El")
+(markdown-mode . "Md")))
+
+(defun clean-mode-line ()
+(interactive)
+(loop for (mode . mode-str) in mode-line-cleaner-alist
+do
+(let ((old-mode-str (cdr (assq mode minor-mode-alist))))
+(when old-mode-str
+(setcar old-mode-str mode-str))
+;; major mode
+(when (eq mode major-mode)
+(setq mode-name mode-str)))))
+(add-hook 'after-change-major-mode-hook 'clean-mode-line)
